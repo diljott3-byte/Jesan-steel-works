@@ -1,4 +1,4 @@
-name: Deploy static website to GitHub Pages
+name: Deploy plain HTML website to GitHub Pages
 
 on:
   push:
@@ -16,29 +16,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build static pages
-        run: npm run build:pages
-
-      - name: Verify generated routes
+      - name: Verify static website files
         run: |
-          test -f out/index.html
-          test -f out/infrastructure/index.html
-          test -f out/.nojekyll
+          test -f index.html
+          test -f infrastructure.html
+          test -f styles.css
+          test -f script.js
+          test -f site-config.js
+          test -f .nojekyll
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -46,15 +40,8 @@ jobs:
       - name: Upload static website
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
+          path: .
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
