@@ -23,6 +23,58 @@
   setText("[data-location]", config.location);
   setText("[data-phone-display]", config.phoneDisplay);
 
+  /* Brand-only update: replace the existing plain SANKALP text with the
+     approved JSW logo mark and SANKALP wordmark. No page content changes. */
+  const brandStyle = document.createElement("style");
+  brandStyle.textContent = `
+    .wordmark.brand-image-lockup {
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      min-width: 238px;
+    }
+    .brand-image-lockup .brand-logo-mark {
+      width: 48px;
+      height: 48px;
+      flex: 0 0 48px;
+      object-fit: contain;
+    }
+    .brand-image-lockup .brand-sankalp-wordmark {
+      width: 178px;
+      height: auto;
+      object-fit: contain;
+    }
+    .wordmark-footer.brand-image-lockup {
+      min-width: 0;
+    }
+    .wordmark-footer.brand-image-lockup .brand-logo-mark {
+      width: 54px;
+      height: 54px;
+      flex-basis: 54px;
+    }
+    .wordmark-footer.brand-image-lockup .brand-sankalp-wordmark {
+      width: 205px;
+    }
+    @media (max-width: 760px) {
+      .wordmark.brand-image-lockup { min-width: 0; gap: 7px; }
+      .brand-image-lockup .brand-logo-mark {
+        width: 39px;
+        height: 39px;
+        flex-basis: 39px;
+      }
+      .brand-image-lockup .brand-sankalp-wordmark { width: 142px; }
+    }
+  `;
+  document.head.appendChild(brandStyle);
+
+  document.querySelectorAll(".wordmark").forEach((wordmark) => {
+    wordmark.classList.add("brand-image-lockup");
+    wordmark.innerHTML = `
+      <img class="brand-logo-mark" src="assets/images/jsw-logo-mark.svg" alt="JSW logo">
+      <img class="brand-sankalp-wordmark" src="assets/images/sankalp-wordmark.svg" alt="SANKALP — a product of Jesan Steel Works">
+    `;
+  });
+
   document.querySelectorAll("[data-whatsapp-link]").forEach((link) => {
     link.href = whatsappLink(
       link.dataset.whatsappMessage ||
