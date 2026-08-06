@@ -3,6 +3,15 @@
 
   const config = window.SITE_CONFIG || {};
 
+  ["about.css", "contact.css"].forEach((href) => {
+    if (!document.querySelector(`link[href="${href}"]`)) {
+      const stylesheet = document.createElement("link");
+      stylesheet.rel = "stylesheet";
+      stylesheet.href = href;
+      document.head.appendChild(stylesheet);
+    }
+  });
+
   const whatsappLink = (message) => {
     const number = String(config.whatsappNumber || "").replace(/\D/g, "");
     const text = String(message || "").trim();
@@ -31,8 +40,6 @@
   setText("[data-phone-display]", config.phoneDisplay);
   setText("[data-showroom-address]", config.showroomAddress);
 
-  /* Brand-only update: replace the existing plain SANKALP text with the
-     approved JSW logo mark and SANKALP wordmark. No page content changes. */
   const brandStyle = document.createElement("style");
   brandStyle.textContent = `
     .wordmark.brand-image-lockup {
@@ -226,7 +233,6 @@
     window.addEventListener("scroll", updateProgress, { passive: true });
     window.addEventListener("resize", updateProgress);
   }
-
 
   const contactForm = document.querySelector(".contact-enquiry-form");
   const productCombobox = document.querySelector("[data-product-combobox]");
